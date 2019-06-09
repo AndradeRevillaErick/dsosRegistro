@@ -3,12 +3,17 @@ $(function(){
     //agregar accion a los botones para agregar goles
     $('#agoleslocal').on('click', agoleslocal);
     $('#agolesvisitante').on('click', agolesvisitante);
+    //accion para el boton de resgistro de goles
+    $('#rtgoles').on('click', cuentaGoles);
     //agregar accion a los botones para agregar titulares
     $('#atitulareslocal').on('click', atitulareslocal);
     $('#atitularesvisitante').on('click', atitularesvisitante);
     //agregar accion a los botones para agregar suplentes
     $('#asuplenteslocal').on('click', asuplenteslocal);
     $('#asuplentesvisitante').on('click', asuplentesvisitante);
+    //agregar accion a los botones para agregar cambios
+    $('#acambioslocal').on('click', acambioslocal);
+    $('#acambiosvisitante').on('click', acambiosvisitante);
     //agregar accion a los botones para agregar tatjetas
     $('#atarjetaslocal').on('click', atarjetaslocal);
     $('#atarjetasvisit').on('click', atarjetasvisitante);
@@ -21,29 +26,31 @@ function eliminaelemento(){
     $(this).parent().remove();
 }
 
-var cgl=0, cgv=0, cjtl=0, cjtv=0, cjsl=0, cjsv=0, ctl=0, ctv=0;//variables contadoras para llevar el control de los id´s de los select
+var cgl=0, cgv=0, cjtl=0, cjtv=0, cjsl=0, cjsv=0, ctl=0, ctv=0, ccl=0, ccv=0;//variables contadoras para llevar el control de los id´s de los select
 
 //Funciones para agregar el codigo de insertar goles
 function agoleslocal(){
     var agolesl = $('#plantillagoles').html();
     
     $('#goleslocal').append(agolesl); 
-    cgl+=1;
     
+    cgl+=1;
     $('#goljugador').attr("id","goljugadorl"+cgl);
+    $('#eoculto').attr("id","eocultol"+cgl);
+    $('#eocultol'+cgl).attr("name","equipol[]");
     
     //se extrae el valor de la variable que contiene el id del equipo local en este caso
     //esta variable esta en el archivo goles.blade.php
     var elocal = document.getElementById("idlocal").value;
-    console.log(elocal);
+    //console.log(elocal);
 
     //este fukin metodo lista los fukin nombres
     $.get('registro2/'+elocal+'',function(datos){
-        console.log("entro");
+        //console.log("entro");
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            console.log(datos[i].id_jugador);
+            //console.log(datos[i].id_jugador);
             lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#goljugadorl'+cgl).html(lista);
@@ -58,19 +65,32 @@ function agolesvisitante(){
 
     cgv+=1;
     $('#goljugador').attr("id","goljugadorv"+cgv);
+    $('#eoculto').attr("id","eocultov"+cgv);
+    $('#eocultov'+cgv).attr("name","equipov[]");
 
     var evisit = document.getElementById("idvisit").value;
-    console.log(evisit);
+    //console.log(evisit);
 
     $.get('registro2/'+evisit+'',function(datos){
-        console.log("entro");
+        //console.log("entro");
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#goljugadorv'+cgv).html(lista);
     });
+}
+
+function cuentaGoles(){
+    var elg = document.getElementsByName("equipol[]").length;
+    var evg = document.getElementsByName("equipov[]").length;
+
+    console.log(elg);
+    console.log(evg);
+
+    $('totlocal').html(elg);
+    $('totvisitante').html(evg);
 }
 
 //Funciones para agregar el codigo de insertar titulares
@@ -80,16 +100,19 @@ function atitulareslocal(){
 
     cjtl+=1;
     $('#jugadortit').attr("id","jugadortitl"+cjtl);
+    $('#jugadortitl'+cjtl).attr("name","id_jugadorl[]");
+    $('#id_partido').attr("id","id_partidol"+cjtl);
+    $('#id_partidol'+cjtl).attr("name","id_partidol[]");
 
     var elocal = document.getElementById("idlocal").value;
-    console.log(elocal);
+    //console.log(elocal);
 
     $.get('registro2/'+elocal+'',function(datos){
-        console.log("entro");
+        //console.log("entro");
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jugadortitl'+cjtl).html(lista);
     });
@@ -102,16 +125,19 @@ function atitularesvisitante(){
 
     cjtv+=1;
     $('#jugadortit').attr("id","jugadortitv"+cjtv);
+    $('#jugadortitv'+cjtv).attr("name","id_jugadorv[]");
+    $('#id_partido').attr("id","id_partidov"+cjtv);
+    $('#id_partidov'+cjtv).attr("name","id_partidov[]");
 
     var evisit = document.getElementById("idvisit").value;
-    console.log(evisit);
+    //console.log(evisit);
 
     $.get('registro2/'+evisit+'',function(datos){
-        console.log("entro");
+        //console.log("entro");
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jugadortitv'+cjtv).html(lista);
     });
@@ -124,6 +150,9 @@ function asuplenteslocal(){
 
     cjsl+=1;
     $('#jugadorsup').attr("id","jugadorsupl"+cjsl);
+    $('#jugadorsupl'+cjsl).attr("name","id_jugadorl[]");
+    /*$('#id_partido').attr("id","id_partidol"+cjsl);
+    $('#id_partidol'+cjsl).attr("name","id_partidol[]");*/
 
     var elocal = document.getElementById("idlocal").value;
     console.log(elocal);
@@ -133,7 +162,7 @@ function asuplenteslocal(){
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jugadorsupl'+cjsl).html(lista);
     });
@@ -144,6 +173,9 @@ function asuplentesvisitante(){
 
     cjsv+=1;
     $('#jugadorsup').attr("id","jugadorsupv"+cjsv);
+    $('#jugadorsupv'+cjsv).attr("name","id_jugadorv[]");
+    /*$('#id_partido').attr("id","id_partidol"+cjsv);
+    $('#id_partidol'+cjsv).attr("name","id_partidol[]");*/
 
     var evisit = document.getElementById("idvisit").value;
     console.log(evisit);
@@ -153,11 +185,73 @@ function asuplentesvisitante(){
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jugadorsupv'+cjsv).html(lista);
     });
 }
+
+
+/////////////////////////
+//Funciones para agregar el codigo de insertar cambios
+function acambioslocal(){
+    var cambio = $('#plantillacambios').html();
+    $('#cambioslocal').append(cambio);
+
+    ccl+=1;
+    $('#jugadore').attr("id","jugadorel"+ccl);
+    $('#jugadorel'+ccl).attr("name","id_jugadorel[]");
+    $('#jugadors').attr("id","jugadorsl"+ccl);
+    $('#jugadorsl'+ccl).attr("name","id_jugadorsl[]");
+    $('#golminuto').attr("id","golminutol"+ccl);
+    $('#golminutol'+ccl).attr("name","minutol[]");
+    /*$('#id_partido').attr("id","id_partidol"+cjsl);
+    $('#id_partidol'+cjsl).attr("name","id_partidol[]");*/
+
+    var elocal = document.getElementById("idlocal").value;
+    console.log(elocal);
+
+    $.get('registro2/'+elocal+'',function(datos){
+        console.log("entro");
+        var lista='<opcion value="">Seleccione</option>';
+        for(var i=0; i<datos.length; i++)
+        {
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+        }
+        $('#jugadorel'+ccl).html(lista);
+        $('#jugadorsl'+ccl).html(lista);
+    });
+}
+function acambiosvisitante(){
+    var cambio = $('#plantillacambios').html();
+    $('#cambiosvisitante').append(cambio);
+
+    ccv+=1;
+    $('#jugadore').attr("id","jugadorev"+ccv);
+    $('#jugadorev'+ccv).attr("name","id_jugadorev[]");
+    $('#jugadors').attr("id","jugadorsv"+ccv);
+    $('#jugadorsv'+ccv).attr("name","id_jugadorsv[]");
+    $('#golminuto').attr("id","golminutov"+ccl);
+    $('#golminutov'+ccl).attr("name","minutov[]");
+    /*$('#id_partido').attr("id","id_partidol"+cjsv);
+    $('#id_partidol'+cjsv).attr("name","id_partidol[]");*/
+
+    var evisit = document.getElementById("idvisit").value;
+    console.log(evisit);
+
+    $.get('registro2/'+evisit+'',function(datos){
+        console.log("entro");
+        var lista='<opcion value="">Seleccione</option>';
+        for(var i=0; i<datos.length; i++)
+        {
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+        }
+        $('#jugadorev'+ccv).html(lista);
+        $('#jugadorsv'+ccv).html(lista);
+    });
+}
+
+
 
 //Funciones para agregar el codigo de insertar tarjetas
 function atarjetaslocal(){
@@ -175,7 +269,7 @@ function atarjetaslocal(){
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jfaltal'+ctl).html(lista);
     });
@@ -195,7 +289,7 @@ function atarjetasvisitante(){
         var lista='<opcion value="">Seleccione</option>';
         for(var i=0; i<datos.length; i++)
         {
-            lista+='<option value"'+datos[i].id_jugadores+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
+            lista+='<option value="'+datos[i].id_jugador+'">'+datos[i].nombre+' '+datos[i].apellido_p+' '+datos[i].apellido_m+'</option>'            
         }
         $('#jfaltav'+ctv).html(lista);
     });

@@ -2,9 +2,9 @@
 namespace App\Http\Models;
 use Illuminate\Database\Eloquent\Model;
 
-class MGol extends Model{
+class MSuplente extends Model{
     //nombre de la tabla
-    protected $table = 'gol';
+    protected $table = 'suplente';
 
     //llave primaria
     protected $primarykey = null;
@@ -13,16 +13,20 @@ class MGol extends Model{
     //aqui los elementos a mostrarse en la tabla 
     protected $filltable = [
         'id_partido',
+        'id_equipo',
         'id_jugador',
-        'minuto',
-        'cantidad',
-        /*'equipo_en_contra',
-        'equipo_en_favor_de',*/
-        'tipo_anotacion',
         //'eliminado'
     ];
 
     public function partido(){
         return $this->belongsTo('MPartido');
+    }
+
+    public function equipo(){
+        return $this->belongsTo('MEquipo');
+    }
+
+    public function jugador(){
+        return $this->belongsTo('MJugador');
     }
 }
